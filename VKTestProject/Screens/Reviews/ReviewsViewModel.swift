@@ -75,21 +75,39 @@ private extension ReviewsViewModel {
 // MARK: - Items
 
 private extension ReviewsViewModel {
-
     typealias ReviewItem = ReviewCellConfig
 
     func makeReviewItem(_ review: Review) -> ReviewItem {
         let reviewText = review.text.attributed(font: .text)
         let created = review.created.attributed(font: .created, color: .created)
-        let item = ReviewItem(
+        
+        // Получаем данные пользователя
+        let userName = "\(review.firstName) \(review.lastName)"
+        
+        // Загружаем аватар (если есть URL)
+        let avatarImage: UIImage
+        if let avatarURL = review.avatarURL, let url = URL(string: avatarURL),
+           let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+            avatarImage = image
+        } else {
+            avatarImage = UIImage(named: "avatar") ?? UIImage()
+        }
+
+        // Получаем изображение рейтинга
+        let ratingImage = ratingRenderer.ratingImage(review.rating)
+
+        return ReviewItem(
             reviewText: reviewText,
             created: created,
-            onTapShowMore: showMoreReview
+            onTapShowMore: showMoreReview, // Переместили вверх
+            avatarImage: avatarImage,
+            userName: userName,
+            ratingImage: ratingImage
         )
-        return item
     }
-
 }
+
+
 
 // MARK: - UITableViewDataSource
 

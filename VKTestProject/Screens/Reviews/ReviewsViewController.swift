@@ -37,10 +37,13 @@ private extension ReviewsViewController {
         reviewsView.tableView.dataSource = viewModel
         return reviewsView
     }
-
+    
+    //захватывается reviewsView как слабая ссылка.
+    //Хотя это и предотвращает утечку, лучше ослаблять self (то есть контроллер), так как reviewsView является его свойством, а не самостоятельным объектом.
+    //Это позволит избежать возможных проблем, если reviewsView вдруг изменится или переинициализируется.
     func setupViewModel() {
-        viewModel.onStateChange = { [weak reviewsView] _ in
-            reviewsView?.tableView.reloadData()
+        viewModel.onStateChange = { [weak self] _ in
+            self?.reviewsView.tableView.reloadData()
         }
     }
 

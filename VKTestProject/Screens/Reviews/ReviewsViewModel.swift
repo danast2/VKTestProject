@@ -65,7 +65,7 @@ private extension ReviewsViewModel {
             let index = state.items.firstIndex(where: { ($0 as? ReviewItem)?.id == id }),
             var item = state.items[index] as? ReviewItem
         else { return }
-        item.maxLines = .zero
+        item.maxLines = 0 //т.к. maxLines - Int
         state.items[index] = item
         onStateChange?(state)
     }
@@ -99,13 +99,16 @@ private extension ReviewsViewModel {
         return ReviewItem(
             reviewText: reviewText,
             created: created,
-            onTapShowMore: showMoreReview, // Переместили вверх
+            onTapShowMore: { [weak self] id in
+                self?.showMoreReview(with: id)
+            },
             avatarImage: avatarImage,
             userName: userName,
             ratingImage: ratingImage
         )
     }
 }
+
 
 
 
